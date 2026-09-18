@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Renten-Schnellcheck | Sebastian Lang</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap');
+
+:root{
+  --gold:#C8AA22; --red:#BA0704; --black:#000; --cream:#F4EED2;
+  --grey:#F2F2F2; --green:#4C8A2E; --text:#4D4D4D; --dark:#222;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Open Sans",Arial,sans-serif;color:var(--text);background:var(--grey)}
+section{padding:72px 20px}
+.wrap{width:min(1120px,100%);margin:auto}
+h1,h2,h3,p{margin-top:0}
+.hero{background:#000;color:#fff;padding:76px 20px 84px}
+.logo{display:inline-flex;width:48px;height:48px;background:var(--gold);color:#000;align-items:center;justify-content:center;font-weight:800;font-size:20px;margin-bottom:42px}
+.hero h1{font-size:clamp(42px,7vw,78px);line-height:.98;letter-spacing:-2px;margin-bottom:22px;max-width:850px}
+.gold{color:var(--gold)}
+.redbar{height:8px;width:105px;background:var(--red);margin-bottom:24px}
+.hero p{font-size:clamp(18px,2.5vw,25px);line-height:1.45;max-width:760px;color:#eee}
+.light{background:#fff}
+.cream{background:var(--cream)}
+.black{background:#000;color:#fff}
+.red{background:var(--red);color:#fff}
+.dark{background:#222;color:#fff}
+.section-title{font-size:clamp(32px,5vw,54px);line-height:1.05;letter-spacing:-1px;margin-bottom:38px;color:inherit}
+.questions{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.card{background:#fff;border-radius:22px;padding:28px;box-shadow:0 10px 35px rgba(0,0,0,.08)}
+.question{min-height:270px;position:relative}
+.value{position:absolute;right:25px;top:20px;color:var(--gold);font-size:28px;font-weight:800}
+.question h3{font-size:24px;color:#000;max-width:72%;margin-bottom:48px}
+.hint{font-size:14px;line-height:1.5;color:#777;margin-top:17px}
+input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer}
+.range-labels{display:flex;justify-content:space-between;font-size:12px;color:#888;margin-top:7px}
+.children{display:flex;gap:10px;flex-wrap:wrap}
+.child{border:2px solid #ddd;background:#fff;width:54px;height:54px;border-radius:50%;font-size:16px;font-weight:700;cursor:pointer}
+.child.active{background:var(--gold);border-color:var(--gold);color:#000}
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.result-card{background:#111;border:1px solid #333;border-radius:20px;padding:25px}
+.result-card.gold-card{background:var(--gold);color:#000;border-color:var(--gold)}
+.result-card.red-card{background:var(--red);border-color:var(--red)}
+.result-card .num{font-size:clamp(30px,4vw,45px);font-weight:800;line-height:1.05;margin:10px 0}
+.result-card .label{font-size:15px;line-height:1.35;color:#ccc}
+.gold-card .label{color:#222}.red-card .label{color:#fff}
+.bar-wrap{margin:30px 0}
+.bar-label{font-size:14px;margin-bottom:8px}
+.bar{height:18px;border-radius:20px;background:#333;overflow:hidden;display:flex}
+.need-fill{width:100%;background:var(--gold)}
+.get-fill{background:var(--gold)}.gap-fill{background:var(--red)}
+.result-text{font-size:17px;line-height:1.6;max-width:900px}
+.solution-number{font-size:clamp(55px,10vw,100px);font-weight:800;color:var(--gold);line-height:1;margin:5px 0 12px}
+.solution-sub{font-size:18px;margin-bottom:35px}
+.support-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.support{padding:26px;border-radius:18px;background:#fff;color:#000}
+.support.green{border-left:7px solid var(--green)}.support.goldbox{border-left:7px solid var(--gold)}
+.support strong{display:block;font-size:30px;margin-top:5px}
+.support small{font-size:14px;color:#666}
+.warn{margin-top:24px;padding:20px;border-radius:16px;background:#fff;color:#333;border-left:7px solid var(--red)}
+.wait-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.wait-card{border-radius:20px;padding:30px;background:#fff;color:#000}
+.wait-card.later{background:var(--red);color:#fff}
+.wait-num{font-size:clamp(40px,6vw,64px);font-weight:800;line-height:1.05;margin:12px 0}
+.wait-text{font-size:17px;line-height:1.55}
+details{background:#fff;color:#222;border-radius:18px;padding:20px 24px;box-shadow:0 8px 25px rgba(0,0,0,.07)}
+summary{cursor:pointer;font-size:19px;font-weight:700}
+.assumptions{margin:20px 0 0;padding-left:22px;line-height:1.7}
+.small-note{font-size:13px;line-height:1.55;color:#666;margin:18px 0 0}
+.cta{text-align:center}
+.cta h2{font-size:clamp(36px,6vw,62px);line-height:1.05}
+.button{display:inline-block;background:#000;color:#fff;text-decoration:none;padding:17px 27px;border-radius:999px;font-weight:800;margin-top:10px}
+.footer{padding:42px 20px;font-size:13px;line-height:1.6;color:#ccc}
+.footer strong{color:#fff}
+@media(max-width:760px){
+  section{padding:52px 16px}
+  .hero{padding:52px 16px 60px}
+  .logo{margin-bottom:30px}
+  .questions,.result-grid,.support-grid,.wait-grid{grid-template-columns:1fr}
+  .question{min-height:auto}
+  .value{font-size:25px}
+  .card{padding:24px}
+  .result-card{padding:23px}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="logo">SL</div>
+    <h1>Wie viel Rente fehlt <span class="gold">dir?</span></h1>
+    <div class="redbar"></div>
+    <p>Drei Fragen. Eine ehrliche Antwort. Und ein Weg, der funktioniert.</p>
+  </div>
+</header>
+
+<section class="light" id="fragen">
+  <div class="wrap">
+    <h2 class="section-title">Deine drei Fragen.</h2>
+    <div class="questions">
+      <div class="card question">
+        <div class="value" id="ageOut">44</div>
+        <h3>Wie alt bist du?</h3>
+        <input id="age" type="range" min="20" max="64" value="44">
+        <div class="range-labels"><span>20</span><span>64</span></div>
+        <p class="hint" id="ageHint"></p>
+      </div>
+      <div class="card question">
+        <div class="value" id="netOut">3.000 €</div>
+        <h3>Was bleibt dir monatlich netto?</h3>
+        <input id="net" type="range" min="1000" max="6000" step="50" value="3000">
+        <div class="range-labels"><span>1.000 €</span><span>6.000 €</span></div>
+        <p class="hint">Das, was am Monatsanfang tatsächlich auf dem Konto landet.</p>
+      </div>
+      <div class="card question">
+        <div class="value" id="kidsOut">keine</div>
+        <h3>Wie viele Kinder?</h3>
+        <div class="children" id="children">
+          <button class="child active" data-kids="0">keine</button>
+          <button class="child" data-kids="1">1</button>
+          <button class="child" data-kids="2">2</button>
+          <button class="child" data-kids="3">3</button>
+          <button class="child" data-kids="4">4</button>
+        </div>
+        <p class="hint">Für jedes Kind gibt es Geld vom Staat obendrauf.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="black" id="ergebnis">
+  <div class="wrap">
+    <h2 class="section-title">Deine Rentenlücke.</h2>
+    <div class="result-grid">
+      <div class="result-card">
+        <div class="label">brauchst du, um zu leben wie heute</div>
+        <div class="num" id="need">0 €</div>
+        <div class="label">monatlich bei Rentenbeginn</div>
+      </div>
+      <div class="result-card gold-card">
+        <div class="label">bekommst du vom Staat</div>
+        <div class="num" id="state">0 €</div>
+        <div class="label">monatlich nach Abzügen</div>
+      </div>
+      <div class="result-card red-card">
+        <div class="label">fehlen dir jeden Monat</div>
+        <div class="num" id="gap">0 €</div>
+        <div class="label">bei Rentenbeginn</div>
+      </div>
+    </div>
+
+    <div class="bar-wrap">
+      <div class="bar-label">Was du brauchst</div>
+      <div class="bar"><div class="need-fill"></div></div>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-label">Was du bekommst</div>
+      <div class="bar"><div class="get-fill" id="getBar"></div><div class="gap-fill" id="gapBar"></div></div>
+    </div>
+    <p class="result-text" id="resultText"></p>
+  </div>
+</section>
+
+<section class="cream" id="loesung">
+  <div class="wrap">
+    <h2 class="section-title">So schließt du sie.</h2>
+    <div class="solution-number" id="saveRate">0 €</div>
+    <p class="solution-sub">Das ist die monatliche Sparrate, die nach dieser Überschlagsrechnung reicht.</p>
+    <div class="support-grid">
+      <div class="support green">
+        <div>zahlen Staat und Arbeitgeber</div>
+        <strong id="funding">0 €</strong>
+        <small>monatliche Förderung</small>
+      </div>
+      <div class="support goldbox">
+        <div>zahlst du selbst</div>
+        <strong id="own">0 €</strong>
+        <small>monatlicher Eigenanteil</small>
+      </div>
+    </div>
+    <p class="result-text" id="fundingText"></p>
+    <div class="warn" id="warn" style="display:none">
+      Dieser Eigenanteil wäre mehr als ein Viertel deines heutigen Nettoeinkommens. Das können die wenigsten dauerhaft stemmen. Dann führen andere Wege zum Ziel: zum Beispiel eine Einmalanlage aus vorhandenem Vermögen, späterer Renteneintritt oder eine bewusst kleinere Lücke.
+    </div>
+  </div>
+</section>
+
+<section class="light">
+  <div class="wrap">
+    <h2 class="section-title">Und wenn du wartest?</h2>
+    <div class="wait-grid">
+      <div class="wait-card">
+        <div>Start heute</div>
+        <div class="wait-num" id="todayRate">0 €</div>
+        <div>monatlich</div>
+      </div>
+      <div class="wait-card later">
+        <div>Start nach 10 Jahren</div>
+        <div class="wait-num" id="laterRate">0 €</div>
+        <div>monatlich</div>
+      </div>
+    </div>
+    <p class="wait-text" id="waitText"></p>
+  </div>
+</section>
+
+<section class="cream">
+  <div class="wrap">
+    <details>
+      <summary>Womit wir gerechnet haben</summary>
+      <ul class="assumptions" id="assumptions"></ul>
+      <p class="small-note">Das ist eine Überschlagsrechnung mit Durchschnittswerten. Die echten Zahlen stehen erst fest, wenn wir deine persönliche Situation gemeinsam anschauen.</p>
+    </details>
+  </div>
+</section>
+
+<section class="red cta">
+  <div class="wrap">
+    <h2>Willst du es genau wissen?</h2>
+    <p>Dann rechnen wir es mit deinen echten Zahlen durch.</p>
+    <a class="button" href="mailto:Sebastian.lang@allfinanz.ag?subject=Renten-Schnellcheck%20%7C%20Ich%20möchte%20meine%20Rente%20genau%20prüfen">Termin anfragen</a>
+  </div>
+</section>
+
+<footer class="dark footer">
+  <div class="wrap">
+    <strong>Sebastian Lang</strong><br>
+    Vermögensberatung<br><br>
+    Vereinfachte Beispielrechnung auf Basis durchschnittlicher Annahmen, keine Rechts-, Steuer- oder Anlageberatung. Tatsächliche Beträge können abweichen. Der individuelle Zulagenanspruch wird von der Zentralen Zulagenstelle für Altersvermögen berechnet.
+  </div>
+</footer>
+
+<script>
+/*
+ * EINZIGE STELLE FÜR JÄHRLICHE AKTUALISIERUNGEN:
+ * Alle Rechenannahmen liegen hier gebündelt.
+ */
+var ANNAHMEN = {
+  rentenalter: 67,
+  berufsstart: 22,
+  durchschnittsentgelt: 51944,
+  beitragsbemessungsgrenze: 101400,
+  rentenwert: 40.79,
+  nettoBruttoFaktor: 1.58,
+  bedarfNettoAnteil: 0.80,
+  inflation: 0.020,
+  rentenanpassung: 0.015,
+  ansparenRendite: 0.050,
+  rentenRendite: 0.025,
+  rentenbezugJahre: 20,
+  krankenversicherung: 0.0875,
+  pflegeversicherung: 0.036,
+  riesterGrundzulage: 175,
+  riesterKinderzulage: 300,
+  riesterHoechstbetrag: 2100,
+  grenzsteuersatz: 0.30,
+  bavSozialabgabenersparnis: 0.21,
+  bavArbeitgeberzuschuss: 0.15,
+  spaeterStartJahre: 10,
+  tarifJahr: 2025
+};
+
+function euro(n){
+  return new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(Math.max(0,n));
+}
+function percent(n){
+  return new Intl.NumberFormat('de-DE',{maximumFractionDigits:0}).format(n*100) + ' %';
+}
+function steuerGrundtarif(x){
+  x=Math.max(0,x);
+  if(x<=12096) return 0;
+  if(x<=17443){
+    var y=(x-12096)/10000;
+    return (932.30*y+1400)*y;
+  }
+  if(x<=68480){
+    var z=(x-17443)/10000;
+    return (176.64*z+2397)*z+1015.13;
+  }
+  if(x<=277825) return 0.42*x-10911.92;
+  return 0.45*x-19246.67;
+}
+function rentenNetto(alter,netto){
+  var jahre=ANNAHMEN.rentenalter-alter;
+  var jahrBrutto=Math.min(netto*ANNAHMEN.nettoBruttoFaktor*12,ANNAHMEN.beitragsbemessungsgrenze);
+  var punkte=jahrBrutto/ANNAHMEN.durchschnittsentgelt;
+  var renteHeute=punkte*ANNAHMEN.berufsstart<ANNAHMEN.rentenalter ? punkte*(ANNAHMEN.rentenalter-ANNAHMEN.berufsstart)*ANNAHMEN.rentenwert : 0;
+  var renteBrutto=renteHeute*Math.pow(1+ANNAHMEN.rentenanpassung,jahre);
+  var kvpv=renteBrutto*(ANNAHMEN.krankenversicherung+ANNAHMEN.pflegeversicherung);
+  var steuerpflichtAnteil=Math.min(1,0.825+(new Date().getFullYear()+jahre-2023)*0.005);
+  var jahresRente=renteBrutto*12;
+  var steuerbasis=jahresRente*steuerpflichtAnteil-102-36-kvpv;
+  var steuer=steuerGrundtarif(steuerbasis);
+  return Math.max(0,renteBrutto-kvpv-steuer/12);
+}
+function kapitalFuerRente(luecke){
+  var i=ANNAHMEN.rentenRendite/12, n=ANNAHMEN.rentenbezugJahre*12;
+  return luecke*(1-Math.pow(1+i,-n))/i;
+}
+function sparrate(luecke,jahre){
+  if(luecke<=0) return 0;
+  var kapital=kapitalFuerRente(luecke);
+  var r=ANNAHMEN.ansparenRendite/12, m=Math.max(1,jahre*12);
+  return kapital*r/(Math.pow(1+r,m)-1);
+}
+function foerderung(sparrateMonat,kids){
+  var zielJahr=Math.min(sparrateMonat*12, ANNAHMEN.riesterHoechstbetrag);
+  var zulagen=ANNAHMEN.riesterGrundzulage+ANNAHMEN.riesterKinderzulage*kids;
+  var steuervorteil=Math.max(0,zielJahr*ANNAHMEN.grenzsteuersatz-zulagen);
+  var foerder1=Math.min(zielJahr,zulagen+steuervorteil);
+
+  var restJahr=Math.max(0,sparrateMonat*12-ANNAHMEN.riesterHoechstbetrag);
+  var bavMax=ANNAHMEN.beitragsbemessungsgrenze*0.04;
+  var bavAnteil=Math.min(restJahr,bavMax);
+  var umwandlung=bavAnteil/(1+ANNAHMEN.bavArbeitgeberzuschuss);
+  var eigen=umwandlung*(1-ANNAHMEN.grenzsteuersatz-ANNAHMEN.bavSozialabgabenersparnis);
+  var foerder2=Math.max(0,bavAnteil-eigen);
+  var gesamt=(foerder1+foerder2)/12;
+  return {gesamt:gesamt,eigen:Math.max(0,sparrateMonat-gesamt)};
+}
+function renderAssumptions(){
+  var a=ANNAHMEN, list=[
+    'Rentenalter: '+a.rentenalter+' Jahre. Berufsstart: '+a.berufsstart+' Jahre, also '+(a.rentenalter-a.berufsstart)+' Jahre im Beispiel.',
+    'Durchschnittliches Jahreseinkommen: '+euro(a.durchschnittsentgelt)+'.',
+    'Obergrenze für Beiträge: '+euro(a.beitragsbemessungsgrenze)+' im Jahr.',
+    'Aktueller Rentenwert: '+euro(a.rentenwert)+' je Punkt.',
+    'Aus Netto wird für die Rechnung Brutto mit dem Faktor '+String(a.nettoBruttoFaktor).replace('.',',')+' geschätzt.',
+    'Im Ruhestand rechnen wir mit '+percent(a.bedarfNettoAnteil)+' des heutigen Nettoeinkommens.',
+    'Preise steigen im Beispiel um '+percent(a.inflation)+' pro Jahr, die Rente um '+percent(a.rentenanpassung)+'.',
+    'Beim Ansparen rechnen wir mit '+percent(a.ansparenRendite)+' Wertentwicklung pro Jahr, im Ruhestand mit '+percent(a.rentenRendite)+'.',
+    'Rentenbezug: '+a.rentenbezugJahre+' Jahre.',
+    'Kranken- und Pflegeversicherung auf die gesetzliche Rente: '+percent(a.krankenversicherung)+' + '+percent(a.pflegeversicherung)+'.',
+    'Riester: '+euro(a.riesterGrundzulage)+' Grundzulage, '+euro(a.riesterKinderzulage)+' je Kind, bis '+euro(a.riesterHoechstbetrag)+' Jahresbeitrag.',
+    'Angenommener Grenzsteuersatz: '+percent(a.grenzsteuersatz)+'.',
+    'Betriebsrente: '+percent(a.bavSozialabgabenersparnis)+' Sozialabgabenersparnis und '+percent(a.bavArbeitgeberzuschuss)+' Arbeitgeberzuschuss.',
+    'Vergleich: späterer Start nach '+a.spaeterStartJahre+' Jahren.'
+  ];
+  var el=document.getElementById('assumptions'), html='';
+  for(var i=0;i<list.length;i++) html+='<li>'+list[i]+'</li>';
+  el.innerHTML=html;
+}
+function update(){
+  var age=parseInt(document.getElementById('age').value,10);
+  var net=parseInt(document.getElementById('net').value,10);
+  var kids=parseInt(document.querySelector('.child.active').getAttribute('data-kids'),10);
+  var years=Math.max(1,ANNAHMEN.rentenalter-age);
+
+  document.getElementById('ageOut').textContent=age;
+  document.getElementById('netOut').textContent=euro(net);
+  document.getElementById('kidsOut').textContent=kids===0?'keine':String(kids);
+  document.getElementById('ageHint').textContent='Noch '+years+' '+(years===1?'Jahr':'Jahre')+' bis zur Rente mit '+ANNAHMEN.rentenalter+'.';
+
+  var wunschHeute=net*ANNAHMEN.bedarfNettoAnteil;
+  var bedarf=wunschHeute*Math.pow(1+ANNAHMEN.inflation,years);
+  var staat=rentenNetto(age,net);
+  var luecke=Math.max(0,bedarf-staat);
+  var heutigesGeld=luecke/Math.pow(1+ANNAHMEN.inflation,years);
+  var deckung=bedarf>0?Math.min(1,staat/bedarf):1;
+
+  document.getElementById('need').textContent=euro(bedarf);
+  document.getElementById('state').textContent=euro(staat);
+  document.getElementById('gap').textContent=euro(luecke);
+  document.getElementById('getBar').style.width=(deckung*100)+'%';
+  document.getElementById('gapBar').style.width=((1-deckung)*100)+'%';
+  document.getElementById('resultText').textContent='Die gesetzliche Rente deckt in diesem Beispiel '+percent(deckung)+' dessen ab, was du dann zum Leben brauchst. Es fehlen '+euro(luecke)+' im Monat. In heutigem Geld sind das etwa '+euro(heutigesGeld)+'.';
+
+  var rate=sparrate(luecke,years);
+  var fund=foerderung(rate,kids);
+  document.getElementById('saveRate').textContent=euro(rate);
+  document.getElementById('funding').textContent=euro(fund.gesamt);
+  document.getElementById('own').textContent=euro(fund.eigen);
+  document.getElementById('fundingText').textContent='Von der Sparrate kommen in dieser Beispielrechnung etwa '+percent(rate>0?fund.gesamt/rate:0)+' durch Förderung von Staat und Arbeitgeber. Den Rest zahlst du selbst.';
+  document.getElementById('warn').style.display=(fund.eigen>net*0.25)?'block':'none';
+
+  var laterYears=Math.max(1,years-ANNAHMEN.spaeterStartJahre);
+  var later=sparrate(luecke,laterYears);
+  var more=Math.max(0,later-rate);
+  var cost=more*12*laterYears;
+  document.getElementById('todayRate').textContent=euro(rate);
+  document.getElementById('laterRate').textContent=euro(later);
+  document.getElementById('waitText').textContent='Wenn du 10 Jahre wartest, steigt die monatliche Sparrate in diesem Beispiel um '+euro(more)+'. Über die verbleibenden '+laterYears+' Jahre sind das insgesamt etwa '+euro(cost) +' mehr.';
+}
+document.getElementById('age').oninput=update;
+document.getElementById('net').oninput=update;
+var buttons=document.getElementsByClassName('child');
+for(var i=0;i<buttons.length;i++){
+  buttons[i].onclick=function(){
+    for(var j=0;j<buttons.length;j++) buttons[j].className='child';
+    this.className='child active';
+    update();
+  };
+}
+renderAssumptions();
+update();
+</script>
+</body>
+</html>
